@@ -23,6 +23,8 @@ OmegaT file filter plugin.
 There must be a manifest file that indicates that it is an OmegaT plugin. There are two flavors, see below. 
 Omegat 5.3.0 also supports to provide additional information (valid for both flavors) that can be displayed in the UI. 
 You can **optionally** provide name, version, author and description. 
+OmegaT 5.5.0 show plugin name, and author in preference dialog. You are recommended to set these parameters.
+You can **optionally** provide link URL of your plugin home page, License and category.
 For each there are different manifest entry alternatives, and OmegaT will pick the first one present in the order from 
 left to right as described in the table below:
 
@@ -32,23 +34,27 @@ left to right as described in the table below:
 | Version     | Plugin-Version, Bundle-Version, Implementation-Version |
 | Author      | Plugin-Author, Implementation-Vendor, Built-By         |
 | Description | Plugin-Description                                     |
+| Link        | Plugin-Link                                            |
+| License     | Plugin-License                                         |
+| Category    | Plugin-Category                                        |
 
-### plugins for OmegaT 2.1.3 and up
-A plugin should be declared in `META-INF/MANIFEST.MF`:
+These parameters can be set by configuring `grade.properties` file.
+It is like as follows:
 
-    OmegaT-Plugin: true
-    [Plugin-Name: …]
-    [Plugin-Version: x.y.z]
-    [Plugin-Author: …]
-    [Plugin-Description: …]
-    
-    Name: my.Class
-    OmegaT-Plugin: filter
-    
-    [Name: my.optional.other.Class
-    OmegaT-Plugin: filter]
+```properties
+plugin.name=DocuWiki
+plugin.category=filter
+plugin.link=https://github.com/omegat-org/plugin-skeleton
+plugin.author=OmegaT team
+plugin.description=Sample project for development
+plugin.license=GNU General Public License version 3
+```
 
-### plugins for OmegaT 3.0.1 and up
+### plugins for OmegaT 5.3.0 and up
+
+
+
+### plugins for OmegaT 4.3.0 and up
 A plugin should be declared in `META-INF/MANIFEST.MF`:
 
     [Plugin-Name: …]
@@ -56,19 +62,23 @@ A plugin should be declared in `META-INF/MANIFEST.MF`:
     [Plugin-Author: …]
     [Plugin-Description: …]
     OmegaT-Plugins: <classname>
+
 where classname is the fully qualified classname of the plugin's initialization class. Multiple classnames can be defined, 
 like in “Class-Path” attribute, i.e., space separated.
 This class should contain the following methods:
 
     public static void loadPlugins() {}
     public static void unloadPlugins() {}
+
 The `loadPlugins()` method is executed on application startup before any GUI initialization. 
 The plugin initialization class should analyze OmegaT version and register classes for filters:
 
     Core.registerFilterClass(MyFilter.class);
+
 Also, the initialization class can register its own event handlers, for example, for GUI initialization on application startup:
 
     CoreEvents.registerApplicationEventListener(...);
+
 The loadPlugins() method should check OmegaT version, or existing interface, or other things required for plugin execution. 
 If the plugin cannot be loaded, it can send some error message which will be displayed to the user after GUI initialization:
 
